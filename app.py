@@ -53,7 +53,7 @@ st.write("If your information is missing or incorrect, please let us know.")
 google_form_url = "https://docs.google.com/forms/d/e/1FAIpQLSc4sHX_ZmLNbLqTQR95GhxAgb88bWTsKqZdmivI4_X_8Bgf-w/viewform?usp=sharing&ouid=117740253316801220512"
 
 # This is the standard, safe way to add a link button
-st.link_button("Fill Correction Form", google_form_url, type="primary")
+st.link_button("Update your details", google_form_url, type="primary")
 
 # Notice if search results are empty
 if search_input and results.empty:
