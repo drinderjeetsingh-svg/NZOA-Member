@@ -44,18 +44,17 @@ if df is not None:
     else:
         st.info("Enter details above to search the database.")
 
-st.divider() # Adds a visual line to separate the search from the update section
+st.divider() # Adds a nice separator line
 
 st.subheader("📝 Something look wrong?")
-st.write("If your information is missing, outdated, or contains a typo, please let us know.")
+st.write("If your information is missing or incorrect, please let us know.")
 
-# Replace the URL below with your actual Google Form Link
+# REPLACE with your actual Google Form link
 google_form_url = "https://docs.google.com/forms/d/e/1FAIpQLSc4sHX_ZmLNbLqTQR95GhxAgb88bWTsKqZdmivI4_X_8Bgf-w/viewform?usp=sharing&ouid=117740253316801220512"
 
-if st.button("Update My Information"):
-    # This opens the form in a new browser tab
-    st.markdown(f'<a href="{google_form_url}" target="_blank" style="text-decoration: none;"><button style="background-color: #FF4B4B; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Fill Correction Form</button></a>', unsafe_index=False, unsafe_allow_html=True)
+# This is the standard, safe way to add a link button
+st.link_button("Fill Correction Form", google_form_url, type="primary")
 
-# Alternative: A subtle notice if no results are found
+# Notice if search results are empty
 if search_input and results.empty:
-    st.info("Can't find your name? It might not be in our database yet. Click the button above to register your details.")
+    st.warning("Can't find your name? Click the button above to submit your details.")
