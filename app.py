@@ -10,14 +10,15 @@ SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRE6Vy5KOX2C7cA
 @st.cache_data(ttl=300)
 def load_data():
     try:
-        data = pd.read_csv(SHEET_CSV_URL)
-        # CRITICAL FIX: Clean the column names automatically
-        # This removes hidden spaces and handles case sensitivity
+        # We add on_bad_lines='skip' to prevent the crash
+        # and engine='python' for better error handling
+        data = pd.read_csv(SHEET_CSV_URL, on_bad_lines='skip', engine='python')
         data.columns = [str(c).strip() for c in data.columns]
         return data
     except Exception as e:
         st.error(f"Connection Error: {e}")
         return None
+
 
 df = load_data()
 
