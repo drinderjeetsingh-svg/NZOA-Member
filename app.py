@@ -44,7 +44,7 @@ if df is not None:
             if not results.empty:
                 st.success(f"Matches Found: {len(results)}")
                 # Show specific columns in your requested order
-                st.dataframe(results[['LM number', 'Name', 'City', 'Mobile', 'E-mail']], hide_index=True)
+                st.table(results[['LM number', 'Name', 'City', 'Mobile', 'E-mail']])
             else:
                 st.warning("No member found. Check your spelling or try another detail.")
         except KeyError as e:
