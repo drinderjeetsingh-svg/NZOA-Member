@@ -50,7 +50,7 @@ st.subheader("📝 Something look wrong?")
 st.write("If your information is missing, outdated, or contains a typo, please let us know.")
 
 # Replace the URL below with your actual Google Form Link
-google_form_url = "https://docs.google.com/forms/d/e/1FAIpQLSc4sHX_ZmLNbLqTQR95GhxAgb88bWTsKqZdmivI4_X_8Bgf-w/viewform?usp=publish-editor"
+google_form_url = "https://docs.google.com/forms/d/e/1FAIpQLSc4sHX_ZmLNbLqTQR95GhxAgb88bWTsKqZdmivI4_X_8Bgf-w/viewform?usp=sharing&ouid=117740253316801220512"
 
 if st.button("Update My Information"):
     # This opens the form in a new browser tab
