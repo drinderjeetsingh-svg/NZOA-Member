@@ -1,60 +1,61 @@
 import streamlit as st
 import pandas as pd
 
-# Set page title
 st.set_page_config(page_title="NZOA Member Portal", page_icon="📋")
-
 st.title("📋 NZOA Membership Search")
 
 # 1. Your Google Sheet CSV Export Link
-# To get this: In Google Sheets, go to File > Share > Publish to web. 
-# Select 'Entire Document' and 'Comma-separated values (.csv)'. Copy that link.
-SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRE6Vy5KOX2C7cA-n0L92njVELkOkNKuH6y_9ybp41OAXweDIhYBFwRmoNih8_XtvMoXq-b8JSRPO4T/pub?output=csv"
+SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRE6Vy5KOX2C7cA-n0L92njVELkOkNKuH6y_9ybp41OAXweDIhYBFwRmoNih8_XtvMoXq-b8JSRPO4T/pubhtml"
 
-@st.cache_data(ttl=300) # Updates every 5 minutes
+@st.cache_data(ttl=300)
 def load_data():
     try:
-        return pd.read_csv(SHEET_CSV_URL)
+        data = pd.read_csv(SHEET_CSV_URL)
+        # CRITICAL FIX: Clean the column names automatically
+        # This removes hidden spaces and handles case sensitivity
+        data.columns = [str(c).strip() for c in data.columns]
+        return data
     except Exception as e:
-        st.error("Could not connect to the Google Sheet. Please check the 'Publish to Web' link.")
+        st.error(f"Connection Error: {e}")
         return None
 
 df = load_data()
 
 if df is not None:
-    # Clean up column names just in case
-    df.columns = [str(c).strip() for c in df.columns]
-    
     search_input = st.text_input("Search by Name, Email, or Mobile", "").strip()
 
+    # Define the columns we want to search in (cleaned versions)
+    # Ensure these match your Google Sheet headers
+    name_col = 'Name'
+    mobile_col = 'Mobile'
+    email_col = 'E-mail'
+
     if search_input:
-        # Search across Name, Mobile, and E-mail
-        mask = (
-            df['Name'].astype(str).str.contains(search_input, case=False, na=False) |
-            df['Mobile'].astype(str).str.contains(search_input, na=False) |
-            df['E-mail'].astype(str).str.contains(search_input, case=False, na=False)
-        )
-        results = df[mask]
-        
-        if not results.empty:
-            st.success(f"Matches Found: {len(results)}")
-            st.table(results[['LM number', 'Name', 'City', 'Mobile', 'E-mail']])
-        else:
-            st.warning("No member found. Please try a different detail.")
+        try:
+            # Flexible search logic
+            mask = (
+                df[name_col].astype(str).str.contains(search_input, case=False, na=False) |
+                df[mobile_col].astype(str).str.contains(search_input, na=False) |
+                df[email_col].astype(str).str.contains(search_input, case=False, na=False)
+            )
+            results = df[mask]
+            
+            if not results.empty:
+                st.success(f"Matches Found: {len(results)}")
+                # Show specific columns in your requested order
+                st.dataframe(results[['LM number', 'Name', 'City', 'Mobile', 'E-mail']], hide_index=True)
+            else:
+                st.warning("No member found. Check your spelling or try another detail.")
+        except KeyError as e:
+            st.error(f"Column Name Error: The app couldn't find the column {e}.")
+            st.info("Check your Google Sheet headers. They must be exactly: LM number, Name, City, Mobile, E-mail")
+            # This helps you see what the app actually sees:
+            st.write("Current Columns detected:", list(df.columns))
     else:
-        st.info("Enter details above to search the database.")
+        st.info("Enter details above to search.")
 
-st.divider() # Adds a nice separator line
-
-st.subheader("📝 Something look wrong?")
-st.write("If your information is missing or incorrect, please let us know.")
-
-# REPLACE with your actual Google Form link
+# --- Form Update Button ---
+st.divider()
+st.subheader("📝 Information Incorrect?")
 google_form_url = "https://docs.google.com/forms/d/e/1FAIpQLSc4sHX_ZmLNbLqTQR95GhxAgb88bWTsKqZdmivI4_X_8Bgf-w/viewform?usp=sharing&ouid=117740253316801220512"
-
-# This is the standard, safe way to add a link button
-st.link_button("Update your details", google_form_url, type="primary")
-
-# Notice if search results are empty
-if search_input and results.empty:
-    st.warning("Can't find your name? Click the button above to submit your details.")
+st.link_button("Request Data Correction", google_form_url, type="primary")
