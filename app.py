@@ -5,7 +5,7 @@ st.set_page_config(page_title="NZOA Member Portal", page_icon="📋")
 st.title("📋 NZOA Membership Search")
 
 # 1. Your Google Sheet CSV Export Link
-SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRE6Vy5KOX2C7cA-n0L92njVELkOkNKuH6y_9ybp41OAXweDIhYBFwRmoNih8_XtvMoXq-b8JSRPO4T/pubhtml"
+SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRE6Vy5KOX2C7cA-n0L92njVELkOkNKuH6y_9ybp41OAXweDIhYBFwRmoNih8_XtvMoXq-b8JSRPO4T/pub?output=csv"
 
 @st.cache_data(ttl=300)
 def load_data():
